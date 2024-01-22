@@ -8,12 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isFilePickerPresented: Bool = false
+    @State private var newName: String = ""
+    @EnvironmentObject var bookmarkController: BookmarkController
+
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            TextField("Enter new name", text: $newName)
+                .padding()
+                .border(Color.black, width: 1)
+                .background(.gray.opacity(0.2))
+            Button("Show document picker") {
+                isFilePickerPresented.toggle()
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(.blue)
+            .foregroundStyle(.white)
+            .sheet(isPresented: $isFilePickerPresented, content: {
+                DocumentPicker(newName: $newName)
+            })
         }
         .padding()
     }

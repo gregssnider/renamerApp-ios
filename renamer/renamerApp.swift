@@ -12,6 +12,7 @@ struct renamerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(BookmarkController())
         }
     }
 }
