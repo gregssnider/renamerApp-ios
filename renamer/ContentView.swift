@@ -48,9 +48,9 @@ struct ContentView: View {
                     }
             }
             .alert(isPresented: $shouldShowPermissionsAlert) {
-                Alert(title: Text("Permission denied"),
-                      message: Text("Please select the containing folder to give the app access to it."),
-                      dismissButton: .default(Text("OK")) {
+                Alert(title: Text("We need folder access"),
+                      message: Text("To continue please select the containing folder to give the app access to it."),
+                      dismissButton: .default(Text("Select Folder")) {
                     shouldShowFolderPicker = true
                 })
             }
