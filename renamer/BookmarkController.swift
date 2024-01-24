@@ -18,22 +18,26 @@ class BookmarkController: ObservableObject {
     }
     
     func addBookmark(for url: URL) {
-        let parentURL = url.deletingLastPathComponent()
-        print("adding bookmark for \(parentURL)")
+//        let parentURL = url.deletingLastPathComponent()
+//        print("adding bookmark for \(parentURL)")
         do {
-            guard parentURL.startAccessingSecurityScopedResource() else {
-                print("Failed to obtain access to the security-scoped resource.")
+            guard url.startAccessingSecurityScopedResource() else {
+                print("Failed to obtain access to the security-scoped resource WHILE BOOKMARKING \(url)")
                 return
             }
             
-            defer { parentURL.stopAccessingSecurityScopedResource() }
+//            defer {
+//                url.stopAccessingSecurityScopedResource()
+//                print("stopped access BOOKMARKING")
+//            }
             
-            let bookmarkData = try parentURL.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil)
+            let bookmarkData = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil)
             
             let uuid = UUID().uuidString
             try bookmarkData.write(to: getAppSandboxDir().appendingPathComponent(uuid))
             
-            urls.append(parentURL)
+            urls.append(url)
+            print("added bookmark for \(url)")
         } catch {
             print("Error Adding Bookmark: \(error.localizedDescription)")
         }

@@ -15,34 +15,98 @@ import MobileCoreServices
 func renameFile(at fileURL: URL, to newName: String) throws {
     let fileExtension = fileURL.pathExtension
     let directory = fileURL.deletingLastPathComponent()
+    
+    print("directory: \(directory)")
+    print("newName: \(newName)")
+    
 
     // Create a new URL with the updated name and the original extension
     let renamedURL = directory.appendingPathComponent(newName).appendingPathExtension(fileExtension)
+    print("renamedURL: \(renamedURL)")
 
-    try FileManager.default.moveItem(at: fileURL, to: renamedURL)
+    do {
+        let access = fileURL.startAccessingSecurityScopedResource()
+        let folderAccess = fileURL.deletingLastPathComponent().startAccessingSecurityScopedResource()
+        print("access? \(access) // folderAccess? \(folderAccess)")
+        try FileManager.default.moveItem(at: fileURL, to: renamedURL)
+    } catch let error as NSError {
+        switch CocoaError.Code(rawValue: error.code) {
+        case .fileWriteFileExists:
+            print("File exists error")
+        default:
+            print("Other error")
+        }
+        throw error
+    } catch {
+        print("Non-NSError error")
+    }
+    print("will stop accessing security scoped resource")
+    fileURL.stopAccessingSecurityScopedResource()
+//    if directory.startAccessingSecurityScopedResource() {
+//        defer { directory.stopAccessingSecurityScopedResource() }
+//    } else {
+//        print("Failed to obtain access to the security-scoped resource.")
+//    }
 }
 
 /// ATM we use UTType.audio but could add specific audio formats later, if needed.
 let supportedTypes: [UTType] = [UTType.audio]
 
-struct BrowserView: View {
+
+/// Folder picker to give access to parent folder and all its files
+struct FolderPicker: UIViewControllerRepresentable {
+    @EnvironmentObject private var bookmarkController: BookmarkController
+    @Binding var folderPickerWasCancelled: Bool
     
-    @State private var fileBrowserIsShown = false
-    @Binding var newName: String
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.folder])
+        documentPicker.delegate = context.coordinator
+        documentPicker.allowsMultipleSelection = true
+        return documentPicker
+    }
     
-    var body: some View {
-        DocumentPicker(newName: $newName)
-            .environmentObject(BookmarkController())
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {
+        print("updateUIViewController documentPicker")
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+    
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        var parent: FolderPicker
+        var newName: String
+        
+        init(parent: FolderPicker, newName: String = "") {
+            self.parent = parent
+            self.newName = newName
+        }
+        
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            // save bookmark
+            urls.forEach { url in
+                parent.bookmarkController.addBookmark(for: url)
+            }
+            parent.folderPickerWasCancelled = false
+        }
+        
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            parent.folderPickerWasCancelled = true
+        }
     }
 }
 
+/// Document picker to rename
 struct DocumentPicker: UIViewControllerRepresentable {
-    @Binding var newName: String
     @EnvironmentObject private var bookmarkController: BookmarkController
+    @Binding var newName: String
+    @Binding var wasSuccessful: Bool
+    @Binding var pickedURLs: [URL]
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes)
         documentPicker.delegate = context.coordinator
+        documentPicker.allowsMultipleSelection = true
         return documentPicker
     }
     
@@ -51,37 +115,41 @@ struct DocumentPicker: UIViewControllerRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(self, newName)
+        Coordinator(self)
     }
 
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         var parent: DocumentPicker
-        var newName: String
         
-        init(_ parent: DocumentPicker, _ newName: String = "") {
+        init(_ parent: DocumentPicker) {
             self.parent = parent
-            self.newName = newName
         }
         
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            // save bookmark
-            print("documentPicker \(urls[0])")
-            parent.bookmarkController.addBookmark(for: urls[0])
-            
-            // Rename the file
-            var error: NSError?
-            
-            NSFileCoordinator().coordinate(readingItemAt: urls[0], options: [], error: &error) { coordinatedURL in
-                do {
-                    //                let data = try Data(contentsOf: newURL)
-                    print("urls[0]: \(urls[0])")
-                    print("coordinatedURL: \(coordinatedURL)")
-                    print("renamedURL: \(newName)")
-                    try renameFile(at: coordinatedURL, to: newName)
-                } catch  {
-                    print("Error: \(error.localizedDescription)")
+            do {
+                try urls.forEach { url in
+                    try renameFile(at: url, to: parent.newName)
+                    parent.wasSuccessful = true
+                    url.stopAccessingSecurityScopedResource()
+                    print("stopped access for \(url)")
+                }
+            } catch let error as NSError {
+                switch CocoaError.Code(rawValue: error.code) {
+                case .fileWriteFileExists:
+                    print("File exists error")
+                    // send success signal so that it doesn't retry
+                    parent.wasSuccessful = true
+                default:
+                    print("Other error")
+                    parent.wasSuccessful = false
+                    // elevate pickedURLs to retry automatically after failing
+                    parent.pickedURLs = urls
                 }
             }
+        }
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            print("documentPickerWasCancelled")
+            parent.wasSuccessful = true
         }
     }
 }
