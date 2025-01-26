@@ -55,11 +55,12 @@ let supportedTypes: [UTType] = [UTType.audio]
 
 /// Folder picker to give access to parent folder and all its files
 struct FolderPicker: UIViewControllerRepresentable {
-    @EnvironmentObject private var bookmarkController: BookmarkController
+    // @EnvironmentObject private var bookmarkController: BookmarkController
     @Binding var folderPickerWasCancelled: Bool
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.folder])
+        let documentPicker = UIDocumentPickerViewController(
+            forOpeningContentTypes: [.folder])
         documentPicker.delegate = context.coordinator
         documentPicker.allowsMultipleSelection = true
         return documentPicker
@@ -82,15 +83,38 @@ struct FolderPicker: UIViewControllerRepresentable {
             self.newName = newName
         }
         
-        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            // save bookmark
-            urls.forEach { url in
-                parent.bookmarkController.addBookmark(for: url)
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL])
+        
+        {
+//            // save bookmark
+//            urls.forEach { url in
+//                // parent.bookmarkController.addBookmark(for: url)
+//                print("picked folder", url)
+//            }
+            let url = urls.first!
+            let access = url.startAccessingSecurityScopedResource()
+            print("access \(access)")
+            print("url \(url)")
+            print("isFileURL \(url.isFileURL)")
+            print("resolving symlinks \(url.resolvingSymlinksInPath())")
+            let fm = FileManager.default
+            do {
+                let items = try fm.contentsOfDirectory(atPath: url.path)
+                for item in items {
+                    print("found \(item)")
+                }
+            } catch {
+                
             }
+            url.stopAccessingSecurityScopedResource()
+            
             parent.folderPickerWasCancelled = false
         }
         
-        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        func documentPickerWasCancelled(
+            _ controller: UIDocumentPickerViewController)
+        {
+            print("folder picker was cancelled")
             parent.folderPickerWasCancelled = true
         }
     }

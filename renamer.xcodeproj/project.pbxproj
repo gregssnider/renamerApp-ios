@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37B3D00E2D4661640010ED58 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B3D00D2D4661640010ED58 /* UIKit.framework */; };
+		37B3D0102D4661780010ED58 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B3D00F2D4661780010ED58 /* SwiftUI.framework */; };
+		37B3D0122D4661830010ED58 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B3D0112D4661830010ED58 /* MobileCoreServices.framework */; };
+		37B3D0142D4661A90010ED58 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B3D0132D4661A90010ED58 /* UniformTypeIdentifiers.framework */; };
 		B8DD94C02B5EB8A600A28BA6 /* renamerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DD94BF2B5EB8A600A28BA6 /* renamerApp.swift */; };
 		B8DD94C22B5EB8A600A28BA6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DD94C12B5EB8A600A28BA6 /* ContentView.swift */; };
 		B8DD94C42B5EB8A800A28BA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8DD94C32B5EB8A800A28BA6 /* Assets.xcassets */; };
@@ -16,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		37B3D00D2D4661640010ED58 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		37B3D00F2D4661780010ED58 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		37B3D0112D4661830010ED58 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		37B3D0132D4661A90010ED58 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		B8DD94BC2B5EB8A600A28BA6 /* renamer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = renamer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8DD94BF2B5EB8A600A28BA6 /* renamerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = renamerApp.swift; sourceTree = "<group>"; };
 		B8DD94C12B5EB8A600A28BA6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -30,16 +38,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37B3D0142D4661A90010ED58 /* UniformTypeIdentifiers.framework in Frameworks */,
+				37B3D0122D4661830010ED58 /* MobileCoreServices.framework in Frameworks */,
+				37B3D0102D4661780010ED58 /* SwiftUI.framework in Frameworks */,
+				37B3D00E2D4661640010ED58 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37B3D00C2D4661640010ED58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				37B3D0132D4661A90010ED58 /* UniformTypeIdentifiers.framework */,
+				37B3D0112D4661830010ED58 /* MobileCoreServices.framework */,
+				37B3D00F2D4661780010ED58 /* SwiftUI.framework */,
+				37B3D00D2D4661640010ED58 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B8DD94B32B5EB8A600A28BA6 = {
 			isa = PBXGroup;
 			children = (
 				B8DD94BE2B5EB8A600A28BA6 /* renamer */,
+				37B3D00C2D4661640010ED58 /* Frameworks */,
 				B8DD94BD2B5EB8A600A28BA6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -280,7 +304,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"renamer/Preview Content\"";
-				DEVELOPMENT_TEAM = CZAT9Q33H5;
+				DEVELOPMENT_TEAM = Y3HDTV9J7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -293,7 +317,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jaunsoft.renamer;
+				PRODUCT_BUNDLE_IDENTIFIER = "greg-s-snider.Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -309,7 +333,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"renamer/Preview Content\"";
-				DEVELOPMENT_TEAM = CZAT9Q33H5;
+				DEVELOPMENT_TEAM = Y3HDTV9J7Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -322,7 +346,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jaunsoft.renamer;
+				PRODUCT_BUNDLE_IDENTIFIER = "greg-s-snider.Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
